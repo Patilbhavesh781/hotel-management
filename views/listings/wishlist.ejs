@@ -1,0 +1,50 @@
+<% layout("/layouts/boilerplate") %>
+
+<% if(currUser && currUser.wishlist.length > 0) { %>
+  <h2 class="text-center mb-2 mt-1">Your Wishlist</h2>
+<% } %>
+<div class="row justify-content-center">
+  <% for (let listing of allListings.wishlist) { %>
+    <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-center mb-4">
+      <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration: none; color: inherit;">
+        <div class="card shadow-sm fade-in-right-normal" style="width: 100%; max-width: 400px; height: 250px;">  <!-- fixed height -->
+          <div class="row g-0 h-100">
+            <!-- Left: Image -->
+            <div class="col-6 position-relative h-100">
+              <button class="heart-btn wishlist-delete-btn" data-id="<%= listing._id %>" style="position: absolute; top: 5px; right: 5px; z-index: 1;">
+                <span class="heart"><i class="fa-solid fa-heart"></i></span>
+              </button>
+              <img src="<%= listing.image[0].url %>" class="img-fluid rounded-start h-100 w-100" alt="listing image" style="object-fit: cover;">
+            </div>
+
+            <!-- Right: Text -->
+            <div class="col-6 d-flex align-items-center h-100">
+              <div class="card-body">
+                <h5 class="card-title ms-2" style="font-size: 1.2rem;"><%= listing.title %></h5>
+                <p class="card-text ms-2 mb-1" style="font-size: 1rem;">
+                  &#8377; <%= listing.price.toLocaleString("en-IN") %> / night <br>
+                </p>
+                <p class="card-text ms-2"> <%= listing.location %> </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  <% } %>
+</div>
+
+<br><br>
+<% if(currUser && currUser.wishlist.length == 0) {%>
+  <div class="wishlist-no-added">
+    <h3>OOPS! You Wishlist No Added</h3>
+  </div>
+<% } %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    bindHeartEvents();
+    activeHart();
+  });
+</script>
+<script src="/js/wishlist.js"></script>

@@ -1,0 +1,172 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .container {
+        all: unset;
+        margin: 0 !important;
+    }
+    .color-change-5x {
+        animation: color-change-5x 6s linear infinite alternate both;
+        height: 100vh;
+    }
+
+    @keyframes color-change-5x {
+    0%   { background: #19dcea; }
+    25%  { background: #b22cff; }
+    50%  { background: #ea2222; }
+    75%  { background: #f9db7b; }  
+    100% { background: #3bd80d; }
+}
+
+    .owner-container {
+        height: 130vh;
+        padding: 1.5% 0 0 2%;
+        margin-top: 0 !important;
+
+    }
+
+    .info-container {
+        height: fit-content;
+        display: flex;
+    }
+
+    .info-text {
+        width: 50%;
+        height: fit-content;
+    }
+
+    .underline-1 {
+        width: 35%;
+        height: 5px;
+        margin-top: 1rem;
+        background-color: white;
+    }
+
+    .underline-2 {
+        width: 98%;
+        height: 5px;
+        margin-top: 1rem;
+        background-color: white;
+    }
+
+    .image-info {
+        width: 50%;
+        border: 10px solid white;
+        border-radius: 49% 0 0 49%;
+        padding: 3rem 0 3rem 1.3rem;
+        border-right: none;
+    }
+
+    .image-container {
+        border: 8px solid black;
+        border-top-left-radius: 48%;
+        border-bottom-left-radius: 48%;
+        border-top-right-radius: 48%;
+        overflow: hidden;
+        width: 80%;
+        height: 53vh;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        
+    }
+
+    .about-section {
+        margin-top: 4%;
+    }
+
+    .socials-media a {
+        text-decoration: none;
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        color: black;
+    }
+
+    /* less than */
+
+    @media (max-width: 667px) {
+        .info-container {
+            flex-direction: column-reverse;
+        }
+
+        .info-text {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .image-info {
+            width: 100%;
+            padding: 2rem 0 2rem 1rem;
+        }
+        .image-container {
+            height: 33vh;
+        }
+        .owner-container {
+            height: 150vh;
+        }
+
+    }
+
+    .swing-in-right-bck-normal { 
+        animation: swing-in-right-bck-normal 0.6s cubic-bezier(0.175, 0.885, 0.320, 1.275) 0s 1 normal both; 
+    }
+
+    @keyframes swing-in-right-bck-normal {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    }
+
+    @keyframes vibrate-2-normal {0% { transform: scale(1); } 50% { transform: scale(0.97); } 100% { transform: scale(1);} }
+
+.vibrate-2-normal { 
+    animation: vibrate-2-normal 1.5s cubic-bezier(0.645, 0.045, 0.355, 1.000) 0s infinite normal both; 
+}
+</style>
+
+<div class="color-change-5x owner-container ">
+    <h2 class="text-center mb-3 swing-in-right-bck-normal">Bookin Owner Details</h2>
+    <div class="info-container swing-in-right-bck-normal">
+        <div class="info-text">
+            <h5>Hi There, Im</h5>
+            <h1 class="vibrate-2-normal"><span style="color: yellow;">Rohit Rajesh Vadnere</span></h1>
+            <div class="underline-1"></div>
+            <h4 class="mt-2">MERN Stack Devloper | & Java Devloper</h4>
+            
+            <div class="about-section">
+                <h3  style="color: white;">About Me :</h3>
+                <div class="underline-2"></div>
+                <p class="mt-2">MERN Stack Developer | Creative & detail-oriented | Passionate about building clean, full-stack web apps with React, Node.js, MongoDB & Express. Constant learner. Problem solver.</p>
+                <h6><b>Education</b> : Computer Sceience(Data Science)</h6>
+            </div>
+        </div>
+        <div class="image-info swing-in-right-bck-normal">
+            <div class="image-container">
+                <img src="https://res.cloudinary.com/dr9o3niue/image/upload/v1750853791/WhatsApp_Image_2025-06-25_at_17.45.13_f6443cda_c9vxzb.jpg" alt="owner image">
+            </div>
+        </div>
+    </div>
+    <div class="contact-info swing-in-right-bck-normal">
+        <h3 style="color: white;">Get In Touch</h3>
+        <div class="underline-2" style="margin-top: 15px;"></div>
+        <h4 class="text-center mt-2 mb-3">Contact Information</h4>
+        <h6><b>&#9993; Email : </b>rohitvadnere20003@gmail.com</h6>
+        <h6><b>Location : </b>Jalgaon Maharashtra</h6>
+        <h6><b>&#128222; Phone : </b>+91 &nbsp; 7722047582</h6>
+        <h6><b>Get More Info : </b><a href="https://drive.google.com/uc?export=download&id=14WOYvlyjlJl-vtOn0M5jdgV4RCcPRmuz" download style="color: black;"><b>Download My Resume</b></a></h6>
+        <div class="socials-media">
+            <span class="me-2"><b>Social Media : </b></span>
+            <a href="https://www.instagram.com/rohit_vadnere?igsh=MWxiMzAyMHNsbmp0dA=="><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://github.com/rohit-vadnere-2525?tab=repositories"><i class="fa-brands fa-github"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+    </div>
+</div>
+

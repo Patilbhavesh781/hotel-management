@@ -1,0 +1,418 @@
+/* nav-bar */
+
+body {
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+
+}
+
+.container {
+    flex: 1;
+    transition: margin-top 0.3s ease-in-out;
+}
+
+.navbar {
+    height: 5rem;
+    background-color: white;
+}
+
+.container-fluid {
+    background-color: white;
+}
+
+.fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link {
+    color: #222222 !important;
+}
+
+.btn-search i {
+    display: inline;
+    margin-right: 0.5rem;
+}
+
+/* .btn-search {
+    background-color: skyblue !important;
+    color: black !important;
+    border-radius: 1rem !important;
+    border: 1px solid black !important;
+    padding: 0 0.8rem 0 0.8rem !important;
+}
+
+.btn-search:hover {
+    background-color: #fe424d!important;
+    color: white !important;
+} */
+
+/* navbar brand */
+
+.nav-brand-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-brand-container span {
+    color: #fe424d;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.nav-search-container {
+    width: 19rem !important;
+}
+
+.nav-search {
+    border-radius: 1rem !important;
+    padding: 0.5rem 1.5rem 0.5rem 1.5rem !important;
+    border: 1px solid black !important;
+}
+
+.wishlist-btn,
+.logout {
+    text-decoration: none;
+    color: black;
+}
+
+.wishlist-btn {
+    margin-top: 0.4rem;
+    margin-right: 1rem;
+}
+
+.wishlist-btn i {
+    font-size: 1.5rem;
+    color: red;
+    margin-right: 4px;
+}
+
+/* footer */
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover {
+    text-decoration: underline;
+}
+
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-socials i {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.f-info-socials a {
+    color: #222222;
+}
+
+.f-info {
+    height: 8rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-links a {
+    margin-right: 0.8rem;
+}
+
+/* cards */
+
+.listing-card {
+    border: none !important;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.card-img-top {
+    border-radius: 1rem !important;
+    width: 100%;
+    object-fit: cover !important;
+
+}
+
+.card-img-top:hover {
+    opacity: 0.8;
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+.card-text p {
+    font-weight: 400 !important;
+}
+
+.listing-link {
+    text-decoration: none;
+}
+
+/* listing-card-hart */
+
+.heart-btn,
+.heart-btn-warning {
+    font-size: 33px;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    z-index: 10;
+}
+
+.heart,
+.heart-span {
+    color: white;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.heart:hover {
+    color: red;
+}
+
+.heart.active {
+    color: red;
+    transform: scale(1.5);
+}
+
+
+/* New Page */
+
+.add-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+}
+
+/* Edit Page */
+
+.edit-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+}
+
+/* Show Page */
+
+
+.btns {
+    display: flex;
+}
+
+
+/* error page */
+
+.fa-circle-exclamation {
+    height: 2rem;
+    width: 2rem;
+}
+
+/* Map */
+
+#map {
+    height: 400px;
+    width: auto;
+    border-radius: 1.5rem;
+}
+
+/* movable icon */
+
+.icon-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    transition: margin-top 1s ease;
+}
+
+.icon-box {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 0;
+    /* background: #f5f5f5; */
+    height: fit-content;
+}
+
+.icon-box .move-icon {
+    min-width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0.7;
+    cursor: pointer;
+    margin-right: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.icon-box .move-icon:hover {
+    opacity: 1;
+    scale: 1.1;
+}
+
+.icon-box .move-icon span {
+    font-size: 0.7rem;
+    margin-top: 2px;
+}
+
+.icon-box::-webkit-scrollbar {
+    display: none;
+    /* hide scrollbar */
+}
+
+
+#scrollLeft {
+    margin-right: 8px;
+}
+
+#scrollRight {
+
+    margin-left: 8px;
+}
+
+.row .icon-container .scroll-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+/* listing GST */
+
+.tax-info {
+    display: none;
+}
+
+.tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.5rem;
+    padding: 1rem;
+    margin-left: 1rem;
+
+}
+
+.form-switch .form-check-label {
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .tax-toggle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .form-switch {
+        display: inline-block;
+    }
+
+    .nav-search-container {
+        width: 100% !important;
+    }
+}
+
+/* Listing not available */
+
+.no-listing {
+    height: 15rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.wishlist-delete-btn {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    z-index: 10;
+}
+
+.wishlist-image {
+    width: 30rem;
+}
+
+.wishlist-no-added {
+    margin-top: 8rem;
+    text-align: center;
+}
+
+
+.carousel-inner img {
+    height: 300px;
+    /* Fix height */
+    object-fit: cover;
+    /* Maintain design */
+}
+
+/* more than */
+
+@media (min-width: 668px) {
+
+    .one-row-image {
+        display: visible !important;
+
+    }
+
+    #carouselExampleIndicators {
+        display: none !important;
+    }
+}
+
+/* less than */
+
+@media (max-width: 667px) {
+    .one-row-image {
+        display: none !important;
+    }
+
+    #carouselExampleIndicators {
+        display: block !important;
+    }
+}
+
+@media (min-width: 427px) {
+    .navbar-brand {
+        margin: 0 1rem !important;
+    }
+}
+
+@media (max-width: 426px) {
+    .navbar-brand {
+        margin-right: 0.3rem !important;
+    }
+}

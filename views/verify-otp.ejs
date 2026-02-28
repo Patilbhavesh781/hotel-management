@@ -1,0 +1,30 @@
+<% layout("/layouts/boilerplate") %>
+
+<link rel="stylesheet" href="/css/otp.css">
+
+   <div class="otp-container">
+      <div class="otp-box">
+         <div class="icon-email"><i class="fa-solid fa-envelope"></i></div>
+         <h3>Verify Your Email</h3>
+         <p>Please Enter The Verification Code We Sent<br>To <b>
+               <%= email %>
+            </b></p>
+
+         <form id="otpForm">
+            <div class="otp-inputs">
+               <input class="no-spinner" type="number" maxlength="1" />
+               <input class="no-spinner" type="number" maxlength="1" />
+               <input class="no-spinner" type="number" maxlength="1" />
+               <input class="no-spinner" type="number" maxlength="1" />
+               <input class="no-spinner" type="number" maxlength="1" />
+               <input class="no-spinner" type="number" maxlength="1" />
+            </div>
+            <input type="hidden" class="email" name="email" value="<%= email %>">
+            <input type="hidden" class="role" name="role" value="<%= role %>">
+            <button type="submit" class="confirm-btn">Confirm</button>
+         </form>
+      </div>
+   </div>
+
+
+<script src="/js/otp.js"></script>

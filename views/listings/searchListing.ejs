@@ -1,0 +1,64 @@
+<% for (let listing of listings) { %>
+   <div class="card listing-card">
+         <% 
+            let match = false;
+            if (currUserWishlist && Array.isArray(currUserWishlist)) {
+               for (let element of currUserWishlist) {
+                  if (element._id.toString() === listing._id.toString()) {
+                     match = true;
+                     break;
+                  }
+               }
+            }
+         %>
+
+         <% if(currUser) {%>
+         <% if (match) { %>
+            <button class="heart-btn" data-id="<%= listing._id %>">
+               <span class="heart active"><i class="fa-solid fa-heart"></i></span>
+            </button>
+         <% } else { %>
+            <button class="heart-btn" data-id="<%= listing._id %>">
+               <span class="heart"><i class="fa-solid fa-heart"></i></span>
+            </button>
+         <% } %>
+         <% } else {%>
+            <button type="button" class="heart-btn" data-bs-toggle="modal" data-bs-target="#myModal">
+               <span class="heart"><i class="fa-solid fa-heart"></i></span>
+            </button>
+         <% } %>
+      <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration: none; color: inherit;">
+         <img src="<%= listing.image[0].url %>" class="card-img-top" style="height: 20rem; object-fit: cover;"
+         alt="listing_image">
+         <div class="card-body">
+         <p class="card-text">
+            <b>
+               <%= listing.title %>
+            </b> <br>
+            ₹ <%= listing.price.toLocaleString("en-IN") %> / night
+            <br>
+            <b>Location: </b> <%= listing.location %>
+         </p>
+         </div>
+      </a>
+   </div>
+<% } %>
+
+ <!-- Modal Structure -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">&#9888; Warning</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       &#9888; Please Login With User First For Add Wishlist
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="/user/login" type="button" class="btn btn-primary">User Login</a>
+      </div>
+    </div>
+  </div>
+</div>

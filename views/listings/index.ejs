@@ -1,0 +1,160 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row justify-content-center extra-margin">
+    <div class="icon-container col-12 col-md-12">
+        <button id="scrollLeft" class="scroll-btn"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="icon-box" id="iconBox">
+            <div class="move-icon">
+                <i class="fa-solid fa-cow"></i>
+                <span>Farms</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-bed"></i>
+                <span>Rooms</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-mountain"></i>
+                <span>Amazing Views</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-city"></i>
+                <span>Iconic Cities</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-person-swimming"></i>
+                <span>Surfing</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-water-ladder"></i>
+                <span>Amazing Pools</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-umbrella-beach"></i>
+                <span>Beach</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-cabin"></i>
+                <span>Cabins</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-ufo"></i>
+                <span>OMG!</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-water"></i>
+                <span>Lake Front</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-house-night"></i>
+                <span>Tiny House</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-fire"></i>
+                <span>Tranding</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-house-tree"></i>
+                <span>Tree House</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-regular fa-car-building"></i>
+                <span>Country Side</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-campground"></i>
+                <span>Camping</span>
+            </div>
+            <div class="move-icon">
+               <i class="fa-solid fa-landmark"></i>
+                <span>Historical Homes</span>
+            </div>
+            <div class="move-icon">
+                <i class="fa-solid fa-snowflake"></i>
+                <span>Arctic</span>
+            </div> 
+        </div>
+        <button id="scrollRight" class="scroll-btn"><i class="fa-solid fa-arrow-right"></i></button>
+        <div class="tax-toggle">
+            <div class="form-check-reverse form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+                <label class="form-check-label" for="switchCheckDefault" >Dispaly Total After Taxes</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-3 heading">All Listings</h3>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 listing-container">
+    <% for (let listing of allListings) { %>
+            <div class="card listing-card scale-in-center-normal">
+
+                <% 
+                    let match = false;
+                    if (currUserWishlist && Array.isArray(currUserWishlist)) {
+                        for (let element of currUserWishlist) {
+                            if (element._id.toString() === listing._id.toString()) {
+                                match = true;
+                                break;
+                            }
+                        }
+                    }
+                %>
+                
+                <% if(currUser) {%>
+                    <% if (match) { %>
+                        <button class="heart-btn" data-id="<%= listing._id %>">
+                            <span class="heart active"><i class="fa-solid fa-heart"></i></span>
+                        </button>
+                    <% } else { %>
+                        <%if(typeof currUser == "undefined" || currUser.role == "user") {%>
+                            <button class="heart-btn" data-id="<%= listing._id %>">
+                                <span class="heart"><i class="fa-solid fa-heart"></i></span>
+                            </button>
+                        <% } %>
+                    <% } %>
+                <% } else {%>
+                    <button type="button" role="button" class="heart-btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">
+                        <span class="heart-span"><i class="fa-solid fa-heart"></i></span>
+                    </button>
+                <% } %>
+                <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration: none; color: inherit;">
+                    <img src="<%= listing.image[0].url %>" class="card-img-top" style="height: 20rem; object-fit: cover;" alt="listing_image">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%= listing.title %></b> <br>
+                            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
+                            <i class="tax-info"> &nbsp; &nbsp; 18+ GST</i>
+                            <br>
+                            <b>Location: </b> <%= listing.location %>
+                        </p>
+                    </div>
+                </a>
+            </div>
+    <% } %>
+</div>
+
+
+<!-- Modal Structure -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">&#9888; Warning</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       &#9888; Please Login With User First For Add Wishlist
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="/user/login" type="button" class="btn btn-primary">User Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="no-listing hidden">
+    <h3>Listings Not Available</h3>
+</div>

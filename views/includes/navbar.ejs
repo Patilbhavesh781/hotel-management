@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top scale-in-center-normal">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/listings">
+            <div class="nav-brand-container">
+                <i class="fa-regular fa-compass"></i>
+                <span>Bookin</span>
+            </div>
+        </a>  
+
+        <% if (showSearch) { %>
+            <div class="ms-auto me-auto mt-1 mb-1 d-md-none d-lg-none d-block" style="width: 62%;">
+                <form class="d-flex nav-search-container" role="search" >
+                    <input class="form-control me-2 nav-search" type="search" placeholder="Search Destinations" aria-label="Search"/>
+                    <!-- <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button> -->
+                </form>
+            </div>
+        <% } %>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="/listings">Explore</a>
+                <a class="nav-link" href="/listings/new">Add New Listings</a>
+            </div>
+            <% if (showSearch) { %>
+            <div class="ms-auto mt-1 mb-1 d-none d-md-block">
+                <form class="d-flex nav-search-container" role="search" >
+                    <input class="form-control me-2 nav-search" type="search" placeholder="Search Destinations" aria-label="Search"/>
+                    <!-- <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button> -->
+                </form>
+            </div>
+            <% } %>
+
+            <div class="navbar-nav d-flex flex-row ms-auto me-3">
+                <% if(typeof currUser == "undefined") { %>
+                <div class="dropdown-center me-2 mt-2">
+                    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Become Host
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><a class="dropdown-item " href="/host/login">Login</a></li>
+                        <li><a class="dropdown-item" href="/host/signup">Signup</a></li>
+                    </ul>
+                </div>
+                <% } %>
+                <% if(typeof currUser == "undefined") { %>
+                <div class="dropdown-center mt-2">
+                    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Become User
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end">
+                        <li><a class="dropdown-item" href="/user/Login">Login</a></li>
+                        <li><a class="dropdown-item" href="/user/signup">Signup</a></li>
+                    </ul>
+                </div>
+                <% } %>
+
+                <% if (currUser && currUser.role == "user") { %>
+                    <a class="wishlist-btn mb-2" href="/listings/wishlist"><i class="fa-solid fa-heart"></i><b>Wishlist</b></a>
+                <% } %>
+
+                <% if (currUser && currUser.role == "host") { %>
+                    <a class=" mt-2 logout" href="/host/logout"><b>Logout</b></a>
+                <% } %>
+                <% if (currUser && currUser.role == "user") { %>
+                    <a class=" mt-2 logout mb-2" href="/user/logout"><b>Logout</b></a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</nav>
+
+

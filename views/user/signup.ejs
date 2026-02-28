@@ -1,0 +1,39 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row mt-3 justify-content-center">
+    <h1 class="text-center swing-in-right-bck-normal">Signup For User</h1>
+    <div class="col-10 col-md-8 col-lg-6 mt-3 swing-in-right-bck-normal">
+        <form action="/user/signup" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" placeholder="Enter Username" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Required Username
+                    </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" id="Email" placeholder="Enter Email" required>
+                <div class="invalid-feedback">
+                    Required Email also valid Email
+                </div>
+            </div>
+
+             <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="password" placeholder="Enter Password" required>
+                <div class="invalid-feedback">
+                    Required Password
+                </div>
+            </div>
+
+            <button class="btn btn-success">Signup</button>
+        </form>
+    </div>
+</div>
+<br>
+<br>
