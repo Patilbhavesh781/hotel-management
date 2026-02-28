@@ -36,8 +36,11 @@ router.post("/wishlist/:id",isLoggedIn,isUser, wrapAsync(async (req,res) => {
     let id = req.params.id;
     let userId = req.user._id;
     let user = await User.findById(userId);
-    user.wishlist.push(id);
+    if (!user.wishlist.includes(id)) {
+        user.wishlist.push(id);
+    }
     await user.save();
+    res.json({ success: true, redirectTo: "/listings/wishlist" });
 }));
 
 // wishlist is delete in user collection

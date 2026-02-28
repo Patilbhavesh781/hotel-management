@@ -1,5 +1,6 @@
 const Listing = require("../models/listings.js");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const ExpressError = require("../utils/ExpressError.js");
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 const cloudinary = require("cloudinary");
@@ -28,7 +29,7 @@ module.exports.showListing = async (req, res) => {
 };
 
 module.exports.createListing = async (req, res) => {
-    if (req.files.length !== 5) {
+    if (!req.files || req.files.length !== 5) {
         req.flash("error", "Please upload exactly 5 images.");
         return res.redirect("/listings/new");
     }
@@ -39,7 +40,12 @@ module.exports.createListing = async (req, res) => {
     })
         .send();
 
-    const newListing = new Listing(req.body.listing);   //ithe ek object yeto ahe listing ani to direct db madhe save hoto ahe
+    const geometry = response?.body?.features?.[0]?.geometry;
+    if (!geometry) {
+        throw new ExpressError(400, "Could not find coordinates for this location.");
+    }
+
+    const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
 
     newListing.image = req.files.map((f) => ({
@@ -47,7 +53,7 @@ module.exports.createListing = async (req, res) => {
         filename: f.filename,
     }));
 
-    newListing.geometry = response.body.features[0].geometry;
+    newListing.geometry = geometry;
 
     let savedListing = await newListing.save();
     console.log(savedListing);

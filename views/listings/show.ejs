@@ -6,6 +6,15 @@
     const listing = <%- JSON.stringify(listing) %>;
 </script>
 
+<%
+    const fallbackImage = "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1200&q=80";
+    const images = Array.isArray(listing.image) && listing.image.length > 0
+        ? listing.image.filter((img) => img && img.url)
+        : [{ url: fallbackImage }];
+    const safeImages = images.length > 0 ? images : [{ url: fallbackImage }];
+    const gridImages = [0, 1, 2, 3, 4].map((idx) => safeImages[idx] ? safeImages[idx].url : safeImages[0].url);
+%>
+
 <div class="row mt-3 justify-content-center">
     <!-- Main Card -->
     <div class="card col-12 mb-1 listing-card slide-in-right-normal">
@@ -13,29 +22,18 @@
 
         <div id="carouselExampleIndicators" class="carousel slide mt-2" data-bs-ride="carousel" data-bs-interval="2000">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            <% for (let i = 0; i < safeImages.length; i++) { %>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= i %>" class="<%= i === 0 ? 'active' : '' %>" aria-current="<%= i === 0 ? 'true' : 'false' %>" aria-label="Slide <%= i + 1 %>"></button>
+            <% } %>
         </div>
         <div class="carousel-inner rounded-4">
-            <div class="carousel-item active h-50">
-            <img src="<%= listing.image[0].url %>" class="d-block w-100 " alt="...">
-            </div>
-            <div class="carousel-item h-50">
-            <img src="<%= listing.image[1].url %>" class="d-block w-100 " alt="...">
-            </div>
-            <div class="carousel-item h-50">
-            <img src="<%= listing.image[2].url %>" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item h-50">
-            <img src="<%= listing.image[3].url %>" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item h-50">
-            <img src="<%= listing.image[4].url %>" class="d-block w-100" alt="...">
-            </div>
+            <% for (let i = 0; i < safeImages.length; i++) { %>
+                <div class="carousel-item <%= i === 0 ? 'active' : '' %> h-50">
+                    <img src="<%= safeImages[i].url %>" class="d-block w-100" alt="listing image <%= i + 1 %>">
+                </div>
+            <% } %>
         </div>
+        <% if (safeImages.length > 1) { %>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
@@ -44,6 +42,7 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
+        <% } %>
         </div>
 
         <div class="card-body">
@@ -52,7 +51,7 @@
                 <!-- Left Big Image -->
                 <div class="col-12 col-md-6">
                     <div class="show-img ratio ratio-4x3">
-                        <img src="<%= listing.image[0].url %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-top-left-radius: 1.5rem; border-bottom-left-radius: 1.5rem;">
+                        <img src="<%= gridImages[0] %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-top-left-radius: 1.5rem; border-bottom-left-radius: 1.5rem;">
                     </div>
                 </div>
 
@@ -61,22 +60,22 @@
                     <div class="row g-2 h-100">
                         <div class="col-6">
                             <div class="show-img ratio ratio-4x3">
-                                <img src="<%= listing.image[1].url %>" alt="img" class="w-100 h-100 object-fit-cover" >
+                                <img src="<%= gridImages[1] %>" alt="img" class="w-100 h-100 object-fit-cover" >
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="show-img ratio ratio-4x3">
-                                <img src="<%= listing.image[2].url %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-top-right-radius: 1.5rem;">
+                                <img src="<%= gridImages[2] %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-top-right-radius: 1.5rem;">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="show-img ratio ratio-4x3">
-                                <img src="<%= listing.image[3].url %>" alt="img" class="w-100 h-100 object-fit-cover">
+                                <img src="<%= gridImages[3] %>" alt="img" class="w-100 h-100 object-fit-cover">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="show-img ratio ratio-4x3">
-                                <img src="<%= listing.image[4].url %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-bottom-right-radius: 1.5rem;">
+                                <img src="<%= gridImages[4] %>" alt="img" class="w-100 h-100 object-fit-cover" style="border-bottom-right-radius: 1.5rem;">
                             </div>
                         </div>
                     </div>

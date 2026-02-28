@@ -3,7 +3,6 @@ const nodemailer = require("nodemailer");
 
 let tempUserData = {};
 
-
 module.exports.renderSignupFrom = (req, res) => {
     res.render("user/signup.ejs");
 };
@@ -11,6 +10,8 @@ module.exports.renderSignupFrom = (req, res) => {
 module.exports.signup = async (req, res) => {
     try {
         let { username, email, password } = req.body;
+        email = (email || "").trim().toLowerCase();
+        username = (username || "").trim();
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -18,31 +19,33 @@ module.exports.signup = async (req, res) => {
             return res.redirect("/user/signup");
         }
 
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            req.flash("error", "This username is already taken");
+            return res.redirect("/user/signup");
+        }
+
         const otp = Math.floor(100000 + Math.random() * 900000);
 
-        mailText = `
+        const mailText = `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
             <div style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
             <h2 style="color: #333;">Email Verification - My Booking</h2>
-            <p style="font-size: 16px; color: #555;">Hello 👋,</p>
-            <p style="font-size: 16px; color: #555;">Thank you for signing up with <b>My Booking</b>. To complete your registration, please use the OTP below to verify your email address:</p>
+            <p style="font-size: 16px; color: #555;">Hello,</p>
+            <p style="font-size: 16px; color: #555;">Thank you for signing up with <b>My Booking</b>. Use the OTP below to verify your email:</p>
             <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #5b42f3;">
                 ${otp}
             </div>
-            <p style="font-size: 14px; color: #888;">This OTP is valid for only 10 minutes. Please do not share it with anyone.</p>
-            <p style="font-size: 14px; color: #888;">If you did not request this, you can safely ignore this email.</p>
-            <br>
-            <p style="font-size: 14px; color: #333;">My Booking Owner, <br><b>Rohit Vadnere</b></p>
-            <p style="font-size: 14px; color: #333;">Best regards, <br><b>My Booking Team</b></p>
+            <p style="font-size: 14px; color: #888;">This OTP is valid for 10 minutes.</p>
             </div>
         </div>
-        `
+        `;
 
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                pass: (process.env.EMAIL_PASS || "").replace(/\s+/g, ""),
             },
         });
 
@@ -55,27 +58,45 @@ module.exports.signup = async (req, res) => {
         tempUserData[email] = { username, email, password, otp };
 
         return res.render("verify-otp", { email, role: "user" });
+    } catch (err) {
+        console.log(err);
+        if (err.code === "EAUTH") {
+            req.flash("error", "Email service login failed. Check EMAIL_USER/EMAIL_PASS in .env.");
+        } else if (err.code === 11000) {
+            req.flash("error", "Email or username already exists.");
+        } else if (err.name === "UserExistsError") {
+            req.flash("error", err.message);
+        } else {
+            req.flash("error", err.message || "Signup failed. Please try again.");
+        }
+        return res.redirect("/user/signup");
     }
-    catch (err) {
-        console.log(err)
-        req.flash("error", "User Is Allready Registerd");
-        res.redirect("/user/signup");
-
-    }
-
 };
 
 module.exports.otpVerify = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const normalizedEmail = (email || "").trim().toLowerCase();
 
-    const { email, otp } = req.body;
+        if (!tempUserData[normalizedEmail] || tempUserData[normalizedEmail].otp != otp) {
+            return res.json({ success: false, message: "Invalid OTP" });
+        }
 
-    if (tempUserData[email] && tempUserData[email].otp == otp) {
-        const { username, password } = tempUserData[email];
-        const newUser = new User({ email, username });
+        const { username, password } = tempUserData[normalizedEmail];
 
+        if (await User.findOne({ email: normalizedEmail })) {
+            delete tempUserData[normalizedEmail];
+            return res.json({ success: false, message: "Email already registered" });
+        }
 
-        const registeredUser = await User.register(newUser, password); // ✅ 
-        delete tempUserData[email];
+        if (await User.findOne({ username })) {
+            delete tempUserData[normalizedEmail];
+            return res.json({ success: false, message: "Username already taken" });
+        }
+
+        const newUser = new User({ email: normalizedEmail, username });
+        const registeredUser = await User.register(newUser, password);
+        delete tempUserData[normalizedEmail];
 
         req.login(registeredUser, (err) => {
             if (err) {
@@ -85,9 +106,9 @@ module.exports.otpVerify = async (req, res) => {
             req.flash("success", "Welcome Back To My Booking!");
             return res.json({ success: true, redirect: "/listings" });
         });
-
-    } else {
-        return res.json({ success: false, message: "Invalid OTP" });
+    } catch (err) {
+        console.error("User OTP verify error:", err);
+        return res.json({ success: false, message: err.message || "Signup failed" });
     }
 };
 
@@ -101,12 +122,12 @@ module.exports.login = async (req, res) => {
     res.redirect(redirectUrl);
 };
 
-module.exports.logout = (req, res) => {
+module.exports.logout = (req, res, next) => {
     req.logOut((err) => {
         if (err) {
             return next(err);
         }
         req.flash("success", "You are Logged Out");
         res.redirect("/listings");
-    })
+    });
 };

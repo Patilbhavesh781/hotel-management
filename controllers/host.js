@@ -10,6 +10,8 @@ module.exports.renderSignupFrom = (req, res) => {
 module.exports.signup = async (req, res) => {
     try {
         let { username, email, password } = req.body;
+        email = (email || "").trim().toLowerCase();
+        username = (username || "").trim();
 
         const existingHost = await Host.findOne({ email });
         if (existingHost) {
@@ -17,37 +19,38 @@ module.exports.signup = async (req, res) => {
             return res.redirect("/host/signup");
         }
 
+        const existingUsername = await Host.findOne({ username });
+        if (existingUsername) {
+            req.flash("error", "This username is already taken");
+            return res.redirect("/host/signup");
+        }
+
         const otp = Math.floor(100000 + Math.random() * 900000);
 
-        mailText = `
+        const mailText = `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
             <div style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
             <h2 style="color: #333;">Email Verification - My Booking</h2>
-            <p style="font-size: 16px; color: #555;">Hello 👋,</p>
-            <p style="font-size: 16px; color: #555;">Thank you for signing up with <b>My Booking</b>. To complete your registration, please use the OTP below to verify your email address:</p>
+            <p style="font-size: 16px; color: #555;">Hello,</p>
+            <p style="font-size: 16px; color: #555;">Thank you for signing up with <b>My Booking</b>. Use the OTP below to verify your email:</p>
             <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #5b42f3;">
                 ${otp}
             </div>
-            <p style="font-size: 14px; color: #888;">This OTP is valid for only 10 minutes. Please do not share it with anyone.</p>
-            <p style="font-size: 14px; color: #888;">If you did not request this, you can safely ignore this email.</p>
-            <br>
-            <p style="font-size: 14px; color: #333;">My Booking Owner, <br><b>Rohit Vadnere</b></p>
-            <p style="font-size: 14px; color: #333;">Best regards, <br><b>My Booking Team</b></p>
+            <p style="font-size: 14px; color: #888;">This OTP is valid for 10 minutes.</p>
             </div>
         </div>
-        `
-
+        `;
 
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                pass: (process.env.EMAIL_PASS || "").replace(/\s+/g, ""),
             },
         });
 
         await transporter.sendMail({
-            from: '"My Booking " <rohitvadnere20003@gmail.com>',
+            from: `"My Booking" <${process.env.EMAIL_USER}>`,
             to: email,
             subject: "Your OTP for Registration",
             html: mailText,
@@ -56,43 +59,59 @@ module.exports.signup = async (req, res) => {
         tempHostData[email] = { username, email, password, otp };
 
         return res.render("verify-otp", { email, role: "host" });
+    } catch (err) {
+        console.log(err);
+        if (err.code === "EAUTH") {
+            req.flash("error", "Email service login failed. Check EMAIL_USER/EMAIL_PASS in .env.");
+        } else if (err.code === 11000) {
+            req.flash("error", "Email or username already exists.");
+        } else if (err.name === "UserExistsError") {
+            req.flash("error", err.message);
+        } else {
+            req.flash("error", err.message || "Signup failed. Please try again.");
+        }
+        return res.redirect("/host/signup");
     }
-    catch (err) {
-        console.log(err)
-        req.flash("error", "Host Is Allready Registerd");
-        res.redirect("/host/signup");
-
-    }
-
 };
 
 module.exports.otpVerify = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const normalizedEmail = (email || "").trim().toLowerCase();
 
-    const { email, otp } = req.body;
+        if (!tempHostData[normalizedEmail] || tempHostData[normalizedEmail].otp != otp) {
+            return res.json({ success: false, message: "Invalid OTP" });
+        }
 
-    if (tempHostData[email] && tempHostData[email].otp == otp) {
-        const { username, password } = tempHostData[email];
-        const newHost = new Host({ email, username });
+        const { username, password } = tempHostData[normalizedEmail];
 
+        if (await Host.findOne({ email: normalizedEmail })) {
+            delete tempHostData[normalizedEmail];
+            return res.json({ success: false, message: "Email already registered" });
+        }
 
+        if (await Host.findOne({ username })) {
+            delete tempHostData[normalizedEmail];
+            return res.json({ success: false, message: "Username already taken" });
+        }
+
+        const newHost = new Host({ email: normalizedEmail, username });
         const registeredHost = await Host.register(newHost, password);
-        delete tempHostData[email];
+        delete tempHostData[normalizedEmail];
 
         req.login(registeredHost, (err) => {
             if (err) {
                 console.error("Login error:", err);
-                return res.json({ success: false});
+                return res.json({ success: false, message: "Login failed" });
             }
             req.flash("success", "Welcome Back To My Booking!");
             return res.json({ success: true, redirect: "/listings" });
         });
-
-    } else {
-        return res.json({ success: false, message: "Invalid OTP" });
+    } catch (err) {
+        console.error("Host OTP verify error:", err);
+        return res.json({ success: false, message: err.message || "Signup failed" });
     }
 };
-
-
 
 module.exports.renderLoginFrom = (req, res) => {
     res.render("host/login.ejs");
@@ -104,12 +123,12 @@ module.exports.login = async (req, res) => {
     res.redirect(redirectUrl);
 };
 
-module.exports.logout = (req, res) => {
+module.exports.logout = (req, res, next) => {
     req.logOut((err) => {
         if (err) {
             return next(err);
         }
         req.flash("success", "You are Logged Out");
         res.redirect("/listings");
-    })
+    });
 };
